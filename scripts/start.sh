@@ -2,6 +2,7 @@
 
 echo "-------------Start Server-------------"
 cd /home/ubuntu/fitday
+ls
 # MySQL, Redis 실행 상태 확인
 MYSQL_RUNNING=$(docker ps --filter "name=fitDay-mysql" --format "{{.Names}}")
 REDIS_RUNNING=$(docker ps --filter "name=fitDay-redis" --format "{{.Names}}")
