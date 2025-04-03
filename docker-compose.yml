@@ -12,11 +12,11 @@ services:
       - '--character-set-server=utf8mb4'
       - '--collation-server=utf8mb4_unicode_ci'
     environment:
-      TZ : "Asia/Seoul"
-      MYSQL_ROOT_PASSWORD: test1234  # 임시 비밀번호
-      MYSQL_DATABASE: fitDay # DB 이름 선정 시 변경 예정.
-      MYSQL_USER: test1234		# 임시 유저
-      MYSQL_PASSWORD: test1234		# 임시 비밀번호
+      TZ: "Asia/Seoul"
+      MYSQL_ROOT_PASSWORD: test1234
+      MYSQL_DATABASE: fitDay
+      MYSQL_USER: test1234
+      MYSQL_PASSWORD: test1234
     healthcheck: # MySQL 서비스 상태 확인
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
