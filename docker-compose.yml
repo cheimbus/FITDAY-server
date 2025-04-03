@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  mysql:
+    container_name: fitDay-mysql
+    image: mysql:8 # 선호하는 버전 있을 경우 선정 예정!
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db/mysql/data:/var/lib/mysql
+    command:
+      - '--character-set-server=utf8mb4'
+      - '--collation-server=utf8mb4_unicode_ci'
+    environment:
+      TZ : "Asia/Seoul"
+      MYSQL_ROOT_PASSWORD: test1234  # 임시 비밀번호
+      MYSQL_DATABASE: fitDay # DB 이름 선정 시 변경 예정.
+      MYSQL_USER: test1234		# 임시 유저
+      MYSQL_PASSWORD: test1234		# 임시 비밀번호
+    healthcheck: # MySQL 서비스 상태 확인
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  redis:
+    container_name: fitDay-redis
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./db/redis/data:/data
+    command: redis-server --appendonly yes
+    environment:
+      TZ: "Asia/Seoul"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 20s
+      retries: 5
