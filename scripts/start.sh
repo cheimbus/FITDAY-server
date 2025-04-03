@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo "-------------Start Server-------------"
+ls -al
 MYSQL_RUNNING=$(docker ps -q -f name=^fitDay-mysql$)
 REDIS_RUNNING=$(docker ps -q -f name=^fitDay-redis$)
 
