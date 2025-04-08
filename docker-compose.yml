@@ -1,9 +1,31 @@
-version: '3.3'
+version: "3"
 
 services:
+#  nginxproxy:
+#    image: nginx:alpine
+#    container_name: proxyserver
+#    restart: always
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    volumes:
+#      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+#      - ./certbot-etc:/etc/letsencrypt
+#      - ./myweb:/usr/share/nginx/html
+#
+#  certbot:
+#    depends_on:
+#      - nginxproxy
+#    image: certbot/certbot
+#    container_name: certbot
+#    volumes:
+#      - ./certbot-etc:/etc/letsencrypt
+#      - ./myweb:/usr/share/nginx/html
+#    command: certonly --dry-run --webroot --webroot-path=/usr/share/nginx/html --email test@test.com --agree-tos --no-eff-email --keep-until-expiring -d fitday.site -d www.fitday.site
+
   mysql:
     container_name: fitDay-mysql
-    image: mysql:8 # 선호하는 버전 있을 경우 선정 예정!
+    image: mysql:8
     ports:
       - 3306:3306
     volumes:
@@ -17,7 +39,7 @@ services:
       MYSQL_DATABASE: fitDay
       MYSQL_USER: test1234
       MYSQL_PASSWORD: test1234
-    healthcheck: # MySQL 서비스 상태 확인
+    healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
@@ -36,3 +58,4 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       timeout: 20s
       retries: 5
+
