@@ -9,7 +9,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./fitday.conf:/etc/nginx/nginx.conf
+      - ./scripts/fitday.conf:/etc/nginx/nginx.conf
       - ./certbot-etc:/etc/letsencrypt
       - ./web:/usr/share/nginx/html
 
