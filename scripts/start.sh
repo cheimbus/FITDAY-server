@@ -1,16 +1,16 @@
 #!/bin/bash
 
 echo "-------------Start Server-------------"
-
+cd /home/ubuntu/fitday
 if [ ! -d "./certbot-etc" ]; then
   echo "certbot-etc 폴더 생성"
-  mkdir certbot-etc
+  sudo mkdir certbot-etc
 else
   echo "certbot-etc 폴더가 이미 존재합니다."
 fi
 if [ ! -d "./web" ]; then
   echo "web 폴더 생성"
-  mkdir web
+  sudo mkdir web
 else
   echo "web 폴더가 이미 존재합니다."
 fi
