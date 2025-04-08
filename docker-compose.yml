@@ -1,27 +1,27 @@
 version: "3"
 
 services:
-#  nginxproxy:
-#    image: nginx:alpine
-#    container_name: proxyserver
-#    restart: always
-#    ports:
-#      - "80:80"
-#      - "443:443"
-#    volumes:
-#      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-#      - ./certbot-etc:/etc/letsencrypt
-#      - ./myweb:/usr/share/nginx/html
-#
-#  certbot:
-#    depends_on:
-#      - nginxproxy
-#    image: certbot/certbot
-#    container_name: certbot
-#    volumes:
-#      - ./certbot-etc:/etc/letsencrypt
-#      - ./myweb:/usr/share/nginx/html
-#    command: certonly --dry-run --webroot --webroot-path=/usr/share/nginx/html --email test@test.com --agree-tos --no-eff-email --keep-until-expiring -d fitday.site -d www.fitday.site
+  nginxproxy:
+    image: nginx:alpine
+    container_name: proxyserver
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./fitday.conf:/etc/nginx/nginx.conf
+      - ./certbot-etc:/etc/letsencrypt
+      - ./web:/usr/share/nginx/html
+
+  certbot:
+    depends_on:
+      - nginxproxy
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot-etc:/etc/letsencrypt
+      - ./web:/usr/share/nginx/html
+    command: certonly --dry-run --webroot --webroot-path=/usr/share/nginx/html --email test@test.com --agree-tos --no-eff-email --keep-until-expiring -d fitday.site -d www.fitday.site
 
   mysql:
     container_name: fitDay-mysql
