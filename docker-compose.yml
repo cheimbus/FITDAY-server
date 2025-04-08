@@ -2,7 +2,7 @@ version: "3"
 
 services:
   nginxproxy:
-    image: nginx:alpine
+    image: nginx:latest
     container_name: proxyserver
     restart: always
     ports:
