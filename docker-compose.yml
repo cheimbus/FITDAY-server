@@ -24,6 +24,8 @@ services:
     command: certonly --dry-run --webroot --webroot-path=/usr/share/nginx/html --email test@test.com --agree-tos --no-eff-email --keep-until-expiring -d fitday.site -d www.fitday.site
 
   mysql:
+    depends_on:
+      - nginxproxy
     container_name: fitDay-mysql
     image: mysql:8
     ports:
@@ -45,6 +47,8 @@ services:
       retries: 10
 
   redis:
+    depends_on:
+      - nginxproxy
     container_name: fitDay-redis
     image: redis:7
     ports:
