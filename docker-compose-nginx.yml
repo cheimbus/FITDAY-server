@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  nginxproxy:
+    image: nginx:latest
+    container_name: proxyserver
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./scripts/fitday.conf:/etc/nginx/nginx.conf
+      - ./certbot-etc:/etc/letsencrypt
+      - ./web:/usr/share/nginx/html
+    networks:
+      - fitday-network
+
+  certbot:
+    depends_on:
+      - nginxproxy
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot-etc:/etc/letsencrypt
+      - ./web:/usr/share/nginx/html
+    command: certonly --webroot --webroot-path=/usr/share/nginx/html --email test@test.com --agree-tos --no-eff-email --keep-until-expiring -d fitday.site -d www.fitday.site
+    networks:
+      - fitday-network
+
+networks:
+  fitday-network:
+    external: true
