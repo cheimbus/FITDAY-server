@@ -8,6 +8,7 @@ if [ ! -d "./certbot-etc" ]; then
 else
   echo "certbot-etc 폴더가 이미 존재합니다."
 fi
+cd docker
 docker stop github-actions || true
 docker stop fitDay-mysql || true
 docker stop fitDay-redis || true
