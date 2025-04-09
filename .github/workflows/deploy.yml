@@ -41,7 +41,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Docker 이미지 생성
-        run: docker build -t github-actions -f scripts/docker/Dockerfile .
+        run: docker build -t github-actions .
 
       - name: Docker 이미지 Tag
         run: docker tag github-actions ${{ steps.login-ecr.outputs.registry }}/github-actions:latest
@@ -50,7 +50,7 @@ jobs:
         run: docker push ${{ steps.login-ecr.outputs.registry }}/github-actions:latest
 
       - name: 파일 압축
-        run: tar -czvf $GITHUB_SHA.tar.gz scripts
+        run: tar -czvf $GITHUB_SHA.tar.gz appspec.yml scripts docker-compose.yml docker-compose-nginx.yml
 
       - name: S3에 프로젝트 폴더 업로드
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tar.gz s3://siu-github-actions-server/$GITHUB_SHA.tar.gz
