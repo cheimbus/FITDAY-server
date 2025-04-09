@@ -23,12 +23,12 @@ fi
 
 docker-compose -f docker-compose.yml up -d
 
-if ! docker ps | grep -q nginxproxy; then
-  echo "nginxproxy 컨테이너가 실행 중이 아닙니다. docker-compose-nginx.yml 실행합니다."
-  docker-compose -f docker-compose-nginx.yml up -d
-else
-  echo "nginxproxy 컨테이너가 이미 실행 중입니다."
-fi
+#if ! docker ps | grep -q nginxproxy; then
+#  echo "nginxproxy 컨테이너가 실행 중이 아닙니다. docker-compose-nginx.yml 실행합니다."
+#  docker-compose -f docker-compose-nginx.yml up -d
+#else
+#  echo "nginxproxy 컨테이너가 이미 실행 중입니다."
+#fi
 
 docker pull 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
 docker run -d --name github-actions --network fitday-network -p 8080:8080 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
