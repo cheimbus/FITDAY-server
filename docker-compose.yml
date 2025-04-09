@@ -12,6 +12,8 @@ services:
       - ./scripts/fitday.conf:/etc/nginx/nginx.conf
       - ./certbot-etc:/etc/letsencrypt
       - ./web:/usr/share/nginx/html
+    networks:
+      - fitday-network
 
   certbot:
     depends_on:
@@ -22,6 +24,8 @@ services:
       - ./certbot-etc:/etc/letsencrypt
       - ./web:/usr/share/nginx/html
     command: certonly --webroot --webroot-path=/usr/share/nginx/html --email test@test.com --agree-tos --no-eff-email --keep-until-expiring -d fitday.site -d www.fitday.site
+    networks:
+      - fitday-network
 
   mysql:
     depends_on:
@@ -45,6 +49,8 @@ services:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
+    networks:
+      - fitday-network
 
   redis:
     depends_on:
@@ -62,4 +68,9 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       timeout: 20s
       retries: 5
+    networks:
+      - fitday-network
 
+networks:
+  fitday-network:
+    driver: bridge

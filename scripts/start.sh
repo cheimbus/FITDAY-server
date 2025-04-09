@@ -8,6 +8,7 @@ if [ ! -d "./certbot-etc" ]; then
 else
   echo "certbot-etc 폴더가 이미 존재합니다."
 fi
+docker network create fitday-network
 docker stop github-actions || true
 docker stop fitDay-mysql || true
 docker stop fitDay-redis || true
@@ -17,4 +18,5 @@ docker rm fitDay-redis || true
 docker-compose up -d
 docker pull 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
 docker run -d --name github-actions -p 8080:8080 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
+docker network create fitday-network
 echo "-------------End-------------"
