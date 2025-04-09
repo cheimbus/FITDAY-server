@@ -41,7 +41,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Docker 이미지 생성
-        run: docker build -t github-actions .
+        run: docker build -t github-actions -f scripts/docker/Dockerfile .
 
       - name: Docker 이미지 Tag
         run: docker tag github-actions ${{ steps.login-ecr.outputs.registry }}/github-actions:latest
