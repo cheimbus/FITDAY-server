@@ -22,7 +22,7 @@ else
 fi
 #if ! docker ps | grep -q nginxproxy; then
 #  echo "nginxproxy 컨테이너가 실행 중이 아닙니다. docker-compose-nginx.yml 실행합니다."
-  docker-compose -f docker-compose-nginx.yml up -d
+docker-compose -f docker-compose-nginx.yml up -d
 #else
 #  echo "nginxproxy 컨테이너가 이미 실행 중입니다."
 #fi
