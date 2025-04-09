@@ -8,12 +8,6 @@ if [ ! -d "./certbot-etc" ]; then
 else
   echo "certbot-etc 폴더가 이미 존재합니다."
 fi
-if [ ! -d "./web" ]; then
-  echo "web 폴더 생성"
-  sudo mkdir web
-else
-  echo "web 폴더가 이미 존재합니다."
-fi
 docker stop github-actions || true
 docker stop fitDay-mysql || true
 docker stop fitDay-redis || true

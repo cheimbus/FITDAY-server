@@ -19,7 +19,7 @@ services:
     container_name: certbot
     volumes:
       - ./certbot-etc:/etc/letsencrypt
-    command: certonly --dry-run --webroot --webroot-path=/usr/share/nginx/html --email test@test.com --agree-tos --no-eff-email --keep-until-expiring -d fitday.site -d www.fitday.site
+    command: certonly --webroot --webroot-path=/usr/share/nginx/html --email test@test.com --agree-tos --no-eff-email --keep-until-expiring -d fitday.site -d www.fitday.site
 
   mysql:
     depends_on:
