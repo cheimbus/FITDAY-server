@@ -11,7 +11,7 @@ services:
     volumes:
       - ./scripts/fitday.conf:/etc/nginx/nginx.conf
       - ./certbot-etc:/etc/letsencrypt
-#      - ./web:/usr/share/nginx/html
+      - ./web:/usr/share/nginx/html
     networks:
       - fitday-network
 
@@ -22,8 +22,8 @@ services:
     container_name: certbot
     volumes:
       - ./certbot-etc:/etc/letsencrypt
-#      - ./web:/usr/share/nginx/html
-    command: certonly --webroot --webroot-path=/usr/share/nginx/html --email test@test.com --agree-tos --no-eff-email --keep-until-expiring -d fitday.site -d www.fitday.site
+      - ./web:/usr/share/nginx/html
+    command: certonly --webroot --webroot-path=/usr/share/nginx/html --agree-tos --keep-until-expiring -d fitday.site -d www.fitday.site
     networks:
       - fitday-network
 
