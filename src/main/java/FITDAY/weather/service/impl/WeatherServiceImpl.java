@@ -55,7 +55,7 @@ public class WeatherServiceImpl implements WeatherService {
 
         GetXY getXY = getXYByLocation(request.getPos());
 
-        // build true로 인코딩 처리 => restTemplate은 자동 인코딩 기능때문에 2중으로 인코딩되어 공공 API에서 에러가 남
+        // build true로 인코딩 처리 => restTemplate은 자동 인코딩 기능때문에 2중으로 인코딩되어 공공 API에서 에러가 남.
         URI url = UriComponentsBuilder.fromHttpUrl(apiUrl)
                 .queryParam("serviceKey", apiKey)
                 .queryParam("numOfRows", request.getNumOfRows())
