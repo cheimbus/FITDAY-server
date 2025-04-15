@@ -38,20 +38,26 @@ public class WeatherServiceImpl implements WeatherService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${weather.api-url}")
-    private String apiUrl;
+    @Value("${weather.api-scheme}")
+    private String apiScheme;
+
+    @Value("${weather.api-host}")
+    private String apiHost;
 
     @Value("${weather.api-key}")
     private String apiKey;
 
-    @Value("${gemini.api-url}")
-    private String geminiUrl;
+    @Value("${gpt.api-scheme}")
+    private String gptScheme;
 
-    @Value("${gemini.api-key}")
-    private String geminiKey;
+    @Value("${gpt.api-host}")
+    private String gptHost;
 
-    @Value("${gemini.prompt}")
-    private String geminiPrompt;
+    @Value("${gpt.api-key}")
+    private String gptKey;
+
+    @Value("${gpt.prompt}")
+    private String gptPrompt;
 
     @Override
     public ResponseEntity<WeatherInfoResponse> getWeatherData(WeatherInfoRequest request) {
@@ -60,15 +66,15 @@ public class WeatherServiceImpl implements WeatherService {
 
         List<WeatherHourData> weatherData = setWeatherData(request);
         response.setData(weatherData);
-        response.setDes(setDesForGemini(weatherData));
+        response.setDes(setDesForGPT(weatherData));
 
         return ResponseEntity.ok(response);
     }
 
-    public Map<String, RecomandResponse> setDesForGemini(List<WeatherHourData> data) {
+    public Map<String, RecomandResponse> setDesForGPT(List<WeatherHourData> data) {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(geminiPrompt);
+        sb.append(gptPrompt);
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -78,8 +84,10 @@ public class WeatherServiceImpl implements WeatherService {
             log.error("Error converting data to JSON", e);
         }
 
-        URI url = UriComponentsBuilder.fromHttpUrl(geminiUrl)
-                .queryParam("key", geminiKey)
+        URI url = UriComponentsBuilder.newInstance()
+                .scheme(gptScheme)
+                .host(gptHost)
+                .queryParam("key", gptKey)
                 .build()
                 .toUri();
 
@@ -96,10 +104,10 @@ public class WeatherServiceImpl implements WeatherService {
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
         GeminiApiResponse geminiRes = restTemplate.postForObject(url, requestEntity, GeminiApiResponse.class);
 
-        return jsonParsingForGeminiText(geminiRes);
+        return jsonParsingForGPTText(geminiRes);
     }
 
-    public Map<String, RecomandResponse> jsonParsingForGeminiText(GeminiApiResponse geminiRes) {
+    public Map<String, RecomandResponse> jsonParsingForGPTText(GeminiApiResponse geminiRes) {
         Map<String, RecomandResponse> jsonMap = null;
         try {
             // "```json\n"과 "\n```"을 제거하여 JSON 형식 문자열만 추출
@@ -110,7 +118,7 @@ public class WeatherServiceImpl implements WeatherService {
             jsonMap = objectMapper.readValue(jsonString, new TypeReference<>() {});
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("GPT JSON 파싱 에러");
         }
         return jsonMap;
     }
@@ -120,7 +128,9 @@ public class WeatherServiceImpl implements WeatherService {
         GetXY getXY = getXYByLocation(request.getPos());
 
         // build true로 restTemplate 인코딩x 처리 => restTemplate은 자동 인코딩 기능때문에 2중으로 인코딩되어 공공 API에서 에러가 남.
-        URI url = UriComponentsBuilder.fromHttpUrl(apiUrl)
+        URI url = UriComponentsBuilder.newInstance()
+                .scheme(apiScheme)
+                .host(apiHost)
                 .queryParam("serviceKey", apiKey)
                 .queryParam("numOfRows", request.getNumOfRows())
                 .queryParam("base_date", request.getDate())
@@ -132,9 +142,8 @@ public class WeatherServiceImpl implements WeatherService {
                 .toUri();
 
         WeatherApiResponse apiResponse = restTemplate.getForObject(url, WeatherApiResponse.class);
-        List<WeatherHourData> dataPerHour = setDataPerHour(apiResponse);
 
-        return dataPerHour;
+        return  setDataPerHour(apiResponse);
     }
 
     public List<WeatherHourData> setDataPerHour(WeatherApiResponse apiResponse) {
@@ -172,6 +181,7 @@ public class WeatherServiceImpl implements WeatherService {
                     case POP -> data.setPop(item.getFcstValue());
                 }
             } catch (IllegalArgumentException e) {
+                log.info("날씨 enum 값 없음");
             }
         }
         return new ArrayList<>(dataMap.values());
