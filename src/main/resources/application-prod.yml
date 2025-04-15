@@ -1,0 +1,56 @@
+spring:
+  profiles:
+    active: prod
+
+  datasource:
+    url: jdbc:mysql://fitDay-mysql:3306/fitDay?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: test1234
+    password: test1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+#  data:
+#    redis:
+#      host: localhost
+#      port: 6379
+
+jpa:
+  hibernate:
+    ddl-auto: update  # dev/test용으로는 update or create
+  properties:
+    hibernate:
+      format_sql: true
+      show_sql: true
+  database-platform: org.hibernate.dialect.MySQL8Dialect
+
+weather:
+  api-scheme: "https"
+  api-host: "apis.data.go.kr"
+  api-path: "/1360000/VilageFcstInfoService_2.0/getVilageFcst"
+  api-url: "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"
+  api-key: "KNnLklsFlLvcSQ5a%2BVouOhV6Hemorisn2F6cnQhcHKZvzN5aNnizsXDLj5pu3m6O1Zv3689RLUSvKThaFXgUvA%3D%3D"
+
+gemini:
+  api-scheme: "https"
+  api-host: "generativelanguage.googleapis.com"
+  api-path: "/v1beta/models/gemini-2.0-flash:generateContent"
+  api-url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+  api-key: "AIzaSyC8_v7h8n8HL_oP9fPCvd-RlrW4gj0mAp4"
+  prompt: |
+    아래는 시간대별 날씨 정보입니다. 각 시간대에 적절한 옷차림, 준비물 등을 추천하고 간단한 설명을 포함한 JSON 형태로 반환해주세요.
+
+    출력 형식은 다음과 같아야 합니다: json 객체로 바로 쓰게 알아서 파싱 잘 해줘 
+    {
+      "0700": {
+        "recommendations": ["추천 아이템1", "추천 아이템2" ...],
+        "description": "0700 시간대에 대한 설명"
+      },
+      "1200": {
+        "recommendations": ["추천 아이템1", "추천 아이템2" ...],
+        "description": "1200 시간대에 대한 설명"
+      },
+      "2100": {
+        "recommendations": ["추천 아이템1", "추천 아이템2" ...],
+        "description": "2100 시간대에 대한 설명"
+      }
+    }
+    아래는 날씨 데이터입니다:
