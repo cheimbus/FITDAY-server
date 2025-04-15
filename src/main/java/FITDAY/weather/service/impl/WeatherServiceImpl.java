@@ -44,20 +44,26 @@ public class WeatherServiceImpl implements WeatherService {
     @Value("${weather.api-host}")
     private String apiHost;
 
+    @Value("${weather.api-path}")
+    private String apiPath;
+
     @Value("${weather.api-key}")
     private String apiKey;
 
-    @Value("${gpt.api-scheme}")
-    private String gptScheme;
+    @Value("${gemini.api-scheme}")
+    private String geminiScheme;
 
-    @Value("${gpt.api-host}")
-    private String gptHost;
+    @Value("${gemini.api-host}")
+    private String geminiHost;
 
-    @Value("${gpt.api-key}")
-    private String gptKey;
+    @Value("${gemini.api-path}")
+    private String geminiPath;
 
-    @Value("${gpt.prompt}")
-    private String gptPrompt;
+    @Value("${gemini.api-key}")
+    private String geminiKey;
+
+    @Value("${gemini.prompt}")
+    private String geminiPrompt;
 
     @Override
     public ResponseEntity<WeatherInfoResponse> getWeatherData(WeatherInfoRequest request) {
@@ -74,7 +80,7 @@ public class WeatherServiceImpl implements WeatherService {
     public Map<String, RecomandResponse> setDesForGPT(List<WeatherHourData> data) {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(gptPrompt);
+        sb.append(geminiPrompt);
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -85,9 +91,10 @@ public class WeatherServiceImpl implements WeatherService {
         }
 
         URI url = UriComponentsBuilder.newInstance()
-                .scheme(gptScheme)
-                .host(gptHost)
-                .queryParam("key", gptKey)
+                .scheme(geminiScheme)
+                .host(geminiHost)
+                .path(geminiPath)
+                .queryParam("key", geminiKey)
                 .build()
                 .toUri();
 
@@ -131,6 +138,7 @@ public class WeatherServiceImpl implements WeatherService {
         URI url = UriComponentsBuilder.newInstance()
                 .scheme(apiScheme)
                 .host(apiHost)
+                .path(apiPath)
                 .queryParam("serviceKey", apiKey)
                 .queryParam("numOfRows", request.getNumOfRows())
                 .queryParam("base_date", request.getDate())
@@ -181,7 +189,6 @@ public class WeatherServiceImpl implements WeatherService {
                     case POP -> data.setPop(item.getFcstValue());
                 }
             } catch (IllegalArgumentException e) {
-                log.info("날씨 enum 값 없음");
             }
         }
         return new ArrayList<>(dataMap.values());
