@@ -37,6 +37,7 @@ import java.util.*;
 public class WeatherServiceImpl implements WeatherService {
 
     private final RestTemplate restTemplate;
+    private static final List<String> TARGET_HOURS = List.of("0700", "1200", "2100");
 
     @Value("${weather.api-scheme}")
     private String apiScheme;
@@ -162,11 +163,10 @@ public class WeatherServiceImpl implements WeatherService {
         }
 
         // 오전 7시, 오후 12시, 오후 9시 기준 날씨 정보 체크
-        List<String> sList = Arrays.asList("0700", "1200", "2100");
         List<WeatherApiResponse.Item> itemList = apiResponse.getResponse().getBody().getItems().getItem();
         Map<String, WeatherHourData> dataMap = new HashMap<>();
 
-        for (String time : sList) {
+        for (String time : TARGET_HOURS) {
             WeatherHourData data = new WeatherHourData();
             data.setHour(time);
             dataMap.put(time, data);
