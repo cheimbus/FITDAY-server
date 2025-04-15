@@ -4,14 +4,17 @@ import FITDAY.global.Code;
 import FITDAY.global.WeatherCategory;
 import FITDAY.weather.dto.common.GetXY;
 import FITDAY.weather.dto.request.WeatherInfoRequest;
-import FITDAY.weather.dto.response.WeatherApiResponse;
-import FITDAY.weather.dto.response.WeatherHourData;
-import FITDAY.weather.dto.response.WeatherInfoResponse;
+import FITDAY.weather.dto.response.*;
 import FITDAY.weather.exception.WeatherInfoException;
 import FITDAY.weather.service.WeatherService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -41,21 +44,82 @@ public class WeatherServiceImpl implements WeatherService {
     @Value("${weather.api-key}")
     private String apiKey;
 
+    @Value("${gemini.api-url}")
+    private String geminiUrl;
+
+    @Value("${gemini.api-key}")
+    private String geminiKey;
+
+    @Value("${gemini.prompt}")
+    private String geminiPrompt;
+
     @Override
     public ResponseEntity<WeatherInfoResponse> getWeatherData(WeatherInfoRequest request) {
+
         WeatherInfoResponse response = new WeatherInfoResponse();
 
-        response.setData(setWeatherData(request));
-        // TODO : input GPT data
-        response.setDes(null);
+        List<WeatherHourData> weatherData = setWeatherData(request);
+        response.setData(weatherData);
+        response.setDes(setDesForGemini(weatherData));
+
         return ResponseEntity.ok(response);
+    }
+
+    public Map<String, RecomandResponse> setDesForGemini(List<WeatherHourData> data) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(geminiPrompt);
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String dataJson = objectMapper.writeValueAsString(Collections.singletonMap("data", data));
+            sb.append(dataJson);
+        } catch (Exception e) {
+            log.error("Error converting data to JSON", e);
+        }
+
+        URI url = UriComponentsBuilder.fromHttpUrl(geminiUrl)
+                .queryParam("key", geminiKey)
+                .build()
+                .toUri();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("contents", new Object[] {
+                Map.of("parts", new Object[] {
+                        Map.of("text", sb.toString())
+                })
+        });
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+        GeminiApiResponse geminiRes = restTemplate.postForObject(url, requestEntity, GeminiApiResponse.class);
+
+        return jsonParsingForGeminiText(geminiRes);
+    }
+
+    public Map<String, RecomandResponse> jsonParsingForGeminiText(GeminiApiResponse geminiRes) {
+        Map<String, RecomandResponse> jsonMap = null;
+        try {
+            // "```json\n"과 "\n```"을 제거하여 JSON 형식 문자열만 추출
+            String jsonString = geminiRes.getCandidates().get(0).getContent().getParts().get(0).getText().replace("```json\n", "").replace("\n```", "");
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            // TypeReference로 String이 key, RecomandResponse가 value인 것을 명시적으로 나타낼 수 있음
+            jsonMap = objectMapper.readValue(jsonString, new TypeReference<>() {});
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonMap;
     }
 
     public List<WeatherHourData> setWeatherData(WeatherInfoRequest request) {
 
         GetXY getXY = getXYByLocation(request.getPos());
 
-        // build true로 인코딩 처리 => restTemplate은 자동 인코딩 기능때문에 2중으로 인코딩되어 공공 API에서 에러가 남.
+        // build true로 restTemplate 인코딩x 처리 => restTemplate은 자동 인코딩 기능때문에 2중으로 인코딩되어 공공 API에서 에러가 남.
         URI url = UriComponentsBuilder.fromHttpUrl(apiUrl)
                 .queryParam("serviceKey", apiKey)
                 .queryParam("numOfRows", request.getNumOfRows())
@@ -77,7 +141,7 @@ public class WeatherServiceImpl implements WeatherService {
 
         String resultCode = apiResponse.getResponse().getHeader().getResultCode();
         if (!"00".equals(resultCode)) {
-            throw new WeatherInfoException(Code.NO_DATA, "날씨 데이터가 존재하지 않습니다.");
+            throw new WeatherInfoException(Code.NO_DATA, "최근 3일이내의 자료만 제공합니다.");
         }
 
         // 오전 7시, 오후 12시, 오후 9시 기준 날씨 정보 체크
@@ -114,6 +178,7 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     public GetXY getXYByLocation(String location) {
+
         return switch (location) {
             case "서울특별시" -> new GetXY(60, 127);
             case "부산광역시" -> new GetXY(98, 76);

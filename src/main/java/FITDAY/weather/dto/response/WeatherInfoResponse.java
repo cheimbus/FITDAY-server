@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -14,5 +15,5 @@ import java.util.List;
 public class WeatherInfoResponse {
 
     private List<WeatherHourData> data;
-    private String des;
+    private Map<String, RecomandResponse> des;
 }
