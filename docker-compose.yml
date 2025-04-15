@@ -11,10 +11,10 @@ services:
       - '--collation-server=utf8mb4_unicode_ci'
     environment:
       TZ: "Asia/Seoul"
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: test1234
+      MYSQL_DATABASE: fitDay
+      MYSQL_USER: test1234
+      MYSQL_PASSWORD: test1234
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
