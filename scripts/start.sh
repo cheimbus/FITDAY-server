@@ -23,6 +23,4 @@ fi
 
 docker pull 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
 docker-compose -f docker-compose.yml up -d
-
-#docker run -d --name github-actions --network fitday-network -p 8080:8080 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
 echo "-------------End-------------"
