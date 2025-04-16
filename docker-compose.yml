@@ -8,9 +8,6 @@ services:
       - 3306:3306
     volumes:
       - ./db/mysql/data:/var/lib/mysql
-    command:
-      - '--character-set-server=utf8mb4'
-      - '--collation-server=utf8mb4_unicode_ci'
     environment:
       TZ: "Asia/Seoul"
       MYSQL_ROOT_PASSWORD: test1234
@@ -18,7 +15,7 @@ services:
       MYSQL_USER: test1234
       MYSQL_PASSWORD: test1234
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "fitDay-mysql"]
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
     networks:
@@ -34,26 +31,29 @@ services:
     command: redis-server --appendonly yes
     environment:
       TZ: "Asia/Seoul"
-#    healthcheck:
-#      test: ["CMD", "redis-cli", "ping"]
-#      timeout: 20s
-#      retries: 5
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 20s
+      retries: 5
     networks:
       - fitday-network
 
   github-actions:
     container_name: github-actions
-    image: 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
+    image: ${API_SERVER_IMAGE}
     ports:
       - 8080:8080
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/fitDay
+      - SPRING_DATASOURCE_USERNAME=test1234
+      - SPRING_DATASOURCE_PASSWORD=test1234
     networks:
       - fitday-network
-    depends_on:
-      - mysql
-      - redis
-    environment:
-      SPRING_PROFILES_ACTIVE: 'dev'
 
 networks:
   fitday-network:
-    external: true
+    driver: bridge
