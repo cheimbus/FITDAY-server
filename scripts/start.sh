@@ -21,8 +21,8 @@ else
   echo "fitday-network 네트워크가 이미 존재합니다."
 fi
 
+docker pull 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
 docker-compose -f docker-compose.yml up -d
 
-#docker pull 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
 #docker run -d --name github-actions --network fitday-network -p 8080:8080 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
 echo "-------------End-------------"
