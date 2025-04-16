@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
     @GetMapping
     public String Hello() {
-        return "서버세팅!!!!";
+        return "서버 세팅 db 연동 완료";
     }
 }
