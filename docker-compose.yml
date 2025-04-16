@@ -56,4 +56,4 @@ services:
 
 networks:
   fitday-network:
-    driver: bridge
+    external: true
