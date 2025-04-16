@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.3"
 
 services:
   mysql:
@@ -49,10 +49,8 @@ services:
     networks:
       - fitday-network
     depends_on:
-      mysql:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - mysql
+      - redis
     environment:
       SPRING_PROFILES_ACTIVE: 'dev'
 
