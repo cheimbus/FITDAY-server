@@ -46,11 +46,6 @@ services:
     depends_on:
       - mysql
       - redis
-#    environment:
-#      - SPRING_PROFILES_ACTIVE=dev
-#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/fitDay
-#      - SPRING_DATASOURCE_USERNAME=test1234
-#      - SPRING_DATASOURCE_PASSWORD=test1234
     networks:
       - fitday-network
 
