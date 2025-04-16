@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://mysql:3306/fitDay
-    username: test1234
-    password: test1234
+    url: jdbc:mysql://fitday-rds2.c3kwuum0uytt.ap-northeast-2.rds.amazonaws.com:3306/fitday
+    username: admin
+    password: siu!950403
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:
