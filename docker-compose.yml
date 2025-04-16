@@ -50,7 +50,7 @@ services:
     depends_on:
       - mysql
     environment:
-      SPRING_PROFILES_ACTIVE: 'local'
+      SPRING_PROFILES_ACTIVE: 'default'
 
 networks:
   fitday-network:
