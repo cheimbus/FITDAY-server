@@ -47,8 +47,6 @@ services:
       - 8080:8080
     networks:
       - fitday-network
-    environment:
-      SPRING_PROFILES_ACTIVE: prod
     depends_on:
       - mysql
     command: /bin/bash -c "until mysql -h fitDay-mysql -u test1234 -ptest1234 -e 'SELECT 1'; do echo 'Waiting for MySQL...'; sleep 5; done; ./your-action-executable"
