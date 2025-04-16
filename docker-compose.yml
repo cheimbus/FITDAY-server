@@ -17,10 +17,10 @@ services:
       MYSQL_DATABASE: fitDay
       MYSQL_USER: test1234
       MYSQL_PASSWORD: test1234
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
+#    healthcheck:
+#      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+#      timeout: 20s
+#      retries: 10
     networks:
       - fitday-network
 
@@ -34,10 +34,10 @@ services:
     command: redis-server --appendonly yes
     environment:
       TZ: "Asia/Seoul"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      timeout: 20s
-      retries: 5
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#      timeout: 20s
+#      retries: 5
     networks:
       - fitday-network
 
