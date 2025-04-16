@@ -22,5 +22,5 @@ else
 fi
 
 docker pull 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
-docker-compose -f docker-compose.yml up -d mysql github-actions
+docker-compose -f docker-compose.yml up -d redis github-actions
 echo "-------------End-------------"
