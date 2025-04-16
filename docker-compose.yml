@@ -40,6 +40,19 @@ services:
     networks:
       - fitday-network
 
+  github-actions:
+    container_name: github-actions
+    image: 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
+    ports:
+      - 8080:8080
+    networks:
+      - fitday-network
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      - mysql
+    command: /bin/bash -c "until mysql -h fitDay-mysql -u test1234 -ptest1234 -e 'SELECT 1'; do echo 'Waiting for MySQL...'; sleep 5; done; ./your-action-executable"
+
 networks:
   fitday-network:
     external: true
