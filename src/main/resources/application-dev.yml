@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:mysql://fitDay-mysql:3306/fitDay
+    url: jdbc:mysql://mysql:3306/fitDay
     username: test1234
     password: test1234
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:
     redis:
-      host: fitDay-redis
+      host: redis
       port: 6379
 
 jpa:
