@@ -45,6 +45,7 @@ services:
     image: 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
     ports:
       - 8080:8080
+    restart: always
     networks:
       - fitday-network
     depends_on:
