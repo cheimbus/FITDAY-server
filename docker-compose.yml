@@ -8,12 +8,6 @@ services:
       - 3306:3306
     volumes:
       - ./db/mysql/data:/var/lib/mysql
-    environment:
-      TZ: "Asia/Seoul"
-      MYSQL_ROOT_PASSWORD: test1234
-      MYSQL_DATABASE: fitDay
-      MYSQL_USER: test1234
-      MYSQL_PASSWORD: test1234
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
@@ -29,8 +23,6 @@ services:
     volumes:
       - ./db/redis/data:/data
     command: redis-server --appendonly yes
-    environment:
-      TZ: "Asia/Seoul"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       timeout: 20s

@@ -5,6 +5,7 @@ import FITDAY.global.WeatherCategory;
 import FITDAY.weather.dto.common.GetXY;
 import FITDAY.weather.dto.request.WeatherInfoRequest;
 import FITDAY.weather.dto.response.*;
+import FITDAY.weather.exception.GeminiException;
 import FITDAY.weather.exception.WeatherInfoException;
 import FITDAY.weather.service.WeatherService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -72,13 +73,14 @@ public class WeatherServiceImpl implements WeatherService {
         WeatherInfoResponse response = new WeatherInfoResponse();
 
         List<WeatherHourData> weatherData = setWeatherData(request);
+        Map<String, RecomandResponse> geminiData = setDesForGemini(weatherData);
         response.setData(weatherData);
-        response.setDes(setDesForGPT(weatherData));
+        response.setDes(geminiData);
 
         return ResponseEntity.ok(response);
     }
 
-    public Map<String, RecomandResponse> setDesForGPT(List<WeatherHourData> data) {
+    public Map<String, RecomandResponse> setDesForGemini(List<WeatherHourData> data) {
 
         StringBuilder sb = new StringBuilder();
         sb.append(geminiPrompt);
@@ -112,10 +114,11 @@ public class WeatherServiceImpl implements WeatherService {
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
         GeminiApiResponse geminiRes = restTemplate.postForObject(url, requestEntity, GeminiApiResponse.class);
 
-        return jsonParsingForGPTText(geminiRes);
+        return jsonParsingForGeminiText(geminiRes);
     }
 
-    public Map<String, RecomandResponse> jsonParsingForGPTText(GeminiApiResponse geminiRes) {
+    public Map<String, RecomandResponse> jsonParsingForGeminiText(GeminiApiResponse geminiRes) {
+
         Map<String, RecomandResponse> jsonMap = null;
         try {
             // "```json\n"과 "\n```"을 제거하여 JSON 형식 문자열만 추출
@@ -126,7 +129,7 @@ public class WeatherServiceImpl implements WeatherService {
             jsonMap = objectMapper.readValue(jsonString, new TypeReference<>() {});
 
         } catch (Exception e) {
-            log.error("GPT JSON 파싱 에러");
+            throw new GeminiException(Code.NO_DATA, "Gemini parsing 실패 : " + e.getMessage());
         }
         return jsonMap;
     }
@@ -152,7 +155,7 @@ public class WeatherServiceImpl implements WeatherService {
 
         WeatherApiResponse apiResponse = restTemplate.getForObject(url, WeatherApiResponse.class);
 
-        return  setDataPerHour(apiResponse);
+        return setDataPerHour(apiResponse);
     }
 
     public List<WeatherHourData> setDataPerHour(WeatherApiResponse apiResponse) {

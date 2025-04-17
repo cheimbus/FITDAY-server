@@ -2,12 +2,6 @@
 
 echo "-------------Start Server-------------"
 cd /home/ubuntu/fitday
-if [ ! -d "./certbot-etc" ]; then
-  echo "certbot-etc 폴더 생성"
-  sudo mkdir certbot-etc
-else
-  echo "certbot-etc 폴더가 이미 존재합니다."
-fi
 docker stop github-actions || true
 docker stop fitDay-mysql || true
 docker stop fitDay-redis || true
@@ -20,8 +14,8 @@ if ! docker network ls | grep -q fitday-network; then
 else
   echo "fitday-network 네트워크가 이미 존재합니다."
 fi
-
+docker rmi -f 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
 docker pull 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
 docker-compose -f docker-compose-nginx.yml restart nginxproxy
 docker-compose -f docker-compose.yml up -d redis github-actions
-echo "-------------End-------------"
+echo "-------------End Server-------------"
