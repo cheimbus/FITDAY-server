@@ -8,6 +8,7 @@ services:
       - 3306:3306
     volumes:
       - ./db/mysql/data:/var/lib/mysql
+      - ./db/mysql/csv:/var/lib/mysql-files
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s

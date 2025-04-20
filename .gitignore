@@ -40,3 +40,4 @@ application-prod.yml
 application-dev.yml
 db
 .env
+.DS_Store
