@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 public class HelloController {
     @GetMapping
     public String Hello() {
-        return "서버 세팅 db 연동 완료";
+        return "서버 세팅 db 연동 완료!";
     }
 
 //    @GetMapping("/write")
