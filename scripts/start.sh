@@ -15,7 +15,7 @@ else
   echo "fitday-network 네트워크가 이미 존재합니다."
 fi
 set -a
-source .env
+source ../.env
 set +a
 echo "API_SERVER_IMAGE=$API_SERVER_IMAGE"
 docker rmi -f $API_SERVER_IMAGE
