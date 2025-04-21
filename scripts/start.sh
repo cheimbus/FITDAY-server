@@ -14,16 +14,13 @@ if ! docker network ls | grep -q fitday-network; then
 else
   echo "fitday-network 네트워크가 이미 존재합니다."
 fi
-ls
-cd ../
-ls
-cat .env
 set -a
-source ../.env
+source .env
+set +a
 echo "API_SERVER_IMAGE=$API_SERVER_IMAGE"
 docker rmi -f $API_SERVER_IMAGE
 docker pull $API_SERVER_IMAGE
-set +a
 docker-compose -f docker-compose-nginx.yml restart nginxproxy
 docker-compose -f docker-compose.yml up -d redis github-actions
+rm .env
 echo "-------------End Server-------------"
