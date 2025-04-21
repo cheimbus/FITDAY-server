@@ -14,6 +14,10 @@ if ! docker network ls | grep -q fitday-network; then
 else
   echo "fitday-network 네트워크가 이미 존재합니다."
 fi
+ls
+cd ../
+ls
+cat .env
 set -a
 source ../.env
 echo "API_SERVER_IMAGE=$API_SERVER_IMAGE"
