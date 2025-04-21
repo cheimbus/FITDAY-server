@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @RestController
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class HelloController {
     @GetMapping
     public String Hello() {
