@@ -15,11 +15,11 @@ else
   echo "fitday-network 네트워크가 이미 존재합니다."
 fi
 set -a
-source /home/runner/work/FITDAY-server/FITDAY-server/.env
-set +a
+source ../.env
 echo "API_SERVER_IMAGE=$API_SERVER_IMAGE"
 docker rmi -f $API_SERVER_IMAGE
 docker pull $API_SERVER_IMAGE
+set +a
 docker-compose -f docker-compose-nginx.yml restart nginxproxy
 docker-compose -f docker-compose.yml up -d redis github-actions
 echo "-------------End Server-------------"
