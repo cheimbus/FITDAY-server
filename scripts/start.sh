@@ -17,6 +17,7 @@ fi
 set -a
 source .env
 set +a
+echo "API_SERVER_IMAGE=$API_SERVER_IMAGE"
 docker rmi -f $API_SERVER_IMAGE
 docker pull $API_SERVER_IMAGE
 docker-compose -f docker-compose-nginx.yml restart nginxproxy
