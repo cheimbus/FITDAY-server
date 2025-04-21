@@ -29,6 +29,15 @@ jobs:
       - name: .env 파일 생성
         run: echo "${{ secrets.ENV_FILE }}" > .env
 
+      - name: 현재 경로 확인
+        run: pwd
+
+      - name: .env 경로 확인
+        run: realpath .env
+
+      - name: .env 내용 확인
+        run: cat .env
+
       - name: gradlew 권한 부여
         run: chmod +x gradlew
 
