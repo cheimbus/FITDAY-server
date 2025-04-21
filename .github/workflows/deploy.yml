@@ -38,7 +38,7 @@ jobs:
       - name: scripts 경로 확인
         run: realpath scripts/start.sh
 
-      - name: .env 내용 확인
+      - name: .env 내용 확인.
         run: cat .env
 
       - name: gradlew 권한 부여
