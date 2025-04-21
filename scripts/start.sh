@@ -14,8 +14,11 @@ if ! docker network ls | grep -q fitday-network; then
 else
   echo "fitday-network 네트워크가 이미 존재합니다."
 fi
-docker rmi -f 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
-docker pull 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
+set -a
+source .env
+set +a
+docker rmi -f $API_SERVER_IMAGE
+docker pull $API_SERVER_IMAGE
 docker-compose -f docker-compose-nginx.yml restart nginxproxy
 docker-compose -f docker-compose.yml up -d redis github-actions
 echo "-------------End Server-------------"

@@ -33,7 +33,7 @@ services:
 
   github-actions:
     container_name: github-actions
-    image: 390402538983.dkr.ecr.ap-northeast-2.amazonaws.com/github-actions:latest
+    image: ${API_SERVER_IMAGE}
     ports:
       - 8080:8080
     depends_on:
