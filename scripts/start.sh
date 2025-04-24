@@ -23,7 +23,7 @@ docker run -d \
   --name github-actions \
   -p 8082:8080 \
   -v /home/ubuntu/pinpoint:/home/ubuntu/pinpoint:ro \
-  -network fitday-network
+  --network fitday-network \
   ${API_SERVER_IMAGE} \
     java \
       -javaagent:/home/ubuntu/pinpoint/pinpoint-bootstrap.jar \
