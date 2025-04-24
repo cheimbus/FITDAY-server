@@ -22,16 +22,16 @@ docker pull $API_SERVER_IMAGE
 docker run -d \
   --name github-actions \
   -p 8082:8080 \
-  -v /home/ubuntu/pinpoint:/home/ubuntu/pinpoint:ro \
   --network fitday-network \
+  -v /home/ubuntu/pinpoint:/home/ubuntu/pinpoint:ro \
+  --entrypoint java \
   ${API_SERVER_IMAGE} \
-    java \
-      -javaagent:/home/ubuntu/pinpoint/pinpoint-bootstrap.jar \
-      -Dpinpoint.config=/home/ubuntu/pinpoint/pinpoint-root.config \
-      -Dpinpoint.agentId=fitday \
-      -Dpinpoint.applicationName=fitday-app \
-      -Dspring.profiles.active=dev \
-      -jar /app.jar
+    -javaagent:/home/ubuntu/pinpoint/pinpoint-bootstrap.jar \
+    -Dpinpoint.config=/home/ubuntu/pinpoint/pinpoint-root.config \
+    -Dpinpoint.agentId=fitday \
+    -Dpinpoint.applicationName=fitday-app \
+    -Dspring.profiles.active=dev \
+    -jar /app.jar
 
 docker-compose -f docker-compose-nginx.yml restart nginxproxy
 docker-compose -f docker-compose.yml up -d redis
