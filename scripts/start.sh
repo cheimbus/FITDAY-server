@@ -4,8 +4,10 @@ echo "-------------Start Server-------------"
 cd /home/ubuntu/fitday
 
 docker stop github-actions || true
+docker stop spring-app || true
 docker stop fitDay-redis || true
 docker rm github-actions || true
+docker rm spring-app || true
 docker rm fitDay-redis || true
 
 docker network create fitday-network
