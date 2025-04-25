@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @RestController
-@RequestMapping(name = "/common")
+@RequestMapping("/common")
 public class CommonController {
     @GetMapping
     public String Hello() {
