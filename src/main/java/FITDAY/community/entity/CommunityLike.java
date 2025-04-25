@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(
-        name = "community_like",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"community_id", "user_id"})}
+        name = "community_like"
+//        uniqueConstraints = {@UniqueConstraint(columnNames = {"community_id", "user_id"})}
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommunityLike {
@@ -24,9 +24,9 @@ public class CommunityLike {
     @Column(name = "community_like_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "community_id")
-    private Community community;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "community_id")
+//    private Community community;
 
     @Column(name = "reg_id")
     private Long regId;

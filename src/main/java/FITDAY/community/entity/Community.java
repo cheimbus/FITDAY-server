@@ -23,9 +23,9 @@ public class Community {
     @Column(name = "community_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "category_id")
+//    private Category category;
 
     @Column(name = "title")
     private String title;
@@ -33,11 +33,11 @@ public class Community {
     @Column(name = "content")
     private String content;
 
-    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommunityLike> likes = new ArrayList<>();
+//    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Comment> comments = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<CommunityLike> likes = new ArrayList<>();
 
     @Column(name = "read_cnt")
     private Long readCnt;
