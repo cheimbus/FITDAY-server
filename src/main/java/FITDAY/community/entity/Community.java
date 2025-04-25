@@ -33,11 +33,11 @@ public class Community {
     @Column(name = "content")
     private String content;
 
-//    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Comment> comments = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<CommunityLike> likes = new ArrayList<>();
+    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommunityLike> likes = new ArrayList<>();
 
     @Column(name = "read_cnt")
     private Long readCnt;
