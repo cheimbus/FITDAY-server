@@ -60,24 +60,23 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public ResponseEntity<Page<CommunityResponseDto>> getCommunityList(Pageable pageable) {
 
-//        List<CommunityResponseDto> content = jpaQueryFactory
-//                .select(Projections.constructor(
-//                        CommunityResponseDto.class,
-//                        qCommunity.title
-//                ))
-//                .from(qCommunity)
-//                .join(qCommunity.category, qCategory)
-//                .orderBy(qCommunity.id.desc())
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .fetch();
-//
-//        long total = jpaQueryFactory
-//                .select(qCommunity.count())
-//                .from(qCommunity)
-//                .fetchOne();
-//
-//        return ResponseEntity.ok(new PageImpl<>(content, pageable, total));
-        return null;
+        List<CommunityResponseDto> content = jpaQueryFactory
+                .select(Projections.constructor(
+                        CommunityResponseDto.class,
+                        qCommunity.title
+                ))
+                .from(qCommunity)
+                .join(qCommunity.category, qCategory)
+                .orderBy(qCommunity.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long total = jpaQueryFactory
+                .select(qCommunity.count())
+                .from(qCommunity)
+                .fetchOne();
+
+        return ResponseEntity.ok(new PageImpl<>(content, pageable, total));
     }
 }
