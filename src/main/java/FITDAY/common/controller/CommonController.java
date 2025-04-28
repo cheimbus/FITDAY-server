@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 public class CommonController {
     @GetMapping
     public String Hello() {
-        return "test1";
+        return "test!";
     }
 
 //    @GetMapping("/write")
