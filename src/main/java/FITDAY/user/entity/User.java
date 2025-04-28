@@ -42,8 +42,8 @@ public class User {
     @Column(name = "role")
     private String role;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<Token> tokens = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens = new ArrayList<>();
 
     @CreatedDate
     @Column(name = "createAt", updatable = false)
