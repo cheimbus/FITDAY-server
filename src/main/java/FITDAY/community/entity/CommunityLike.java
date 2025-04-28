@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(
-        name = "community_like"
-//        uniqueConstraints = {@UniqueConstraint(columnNames = {"community_id", "user_id"})}
+        name = "community_like",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"community_id", "user_id"})}
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommunityLike {
