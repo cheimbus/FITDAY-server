@@ -22,9 +22,9 @@ public class Comment {
     private Long id;
 
     // 게시글 연관관계
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "community_id")
-    private Community community;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "community_id")
+//    private Community community;
 
     @Column(name = "reg_id")
     private Long regId;

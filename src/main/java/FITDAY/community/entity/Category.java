@@ -22,8 +22,8 @@ public class Category {
     @Column(name = "category_id")
     private Long id;
 
-    @OneToMany(mappedBy = "category")
-    private List<Community> communityList;
+//    @OneToMany(mappedBy = "category")
+//    private List<Community> communityList;
 
     @Column(name = "category_name")
     private String categoryName;
