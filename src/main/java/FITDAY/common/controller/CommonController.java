@@ -20,10 +20,10 @@ public class CommonController {
 
 //    @GetMapping("/write")
 //    public void write() throws IOException {
-//        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("/tmp/community_dummy.csv"));
+//        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("/Users/siu/Desktop/workspace/FITDAY/db/mysql/csv/community_dummy.csv"));
 //        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 //
-//        for (int i = 1; i <= 1_000_000; i++) {
+//        for (int i = 1; i <= 3_000_000; i++) {
 //            String title = "제목 " + i;
 //            String content = "내용 더미 " + i;
 //            long categoryId = (i % 10) + 1;
