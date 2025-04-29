@@ -65,7 +65,7 @@ public class CommunityServiceImpl implements CommunityService {
                         CommunityResponseDto.class,
                         qCommunity.id,
                         qCommunity.title,
-                        qCommunity.category.id
+                        qCommunity.category.id.as("categoryId")
                 ))
                 .from(qCommunity)
                 .join(qCommunity.category, qCategory)
