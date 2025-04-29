@@ -5,6 +5,7 @@ import FITDAY.community.dto.response.CommunityResponseDto;
 import FITDAY.community.entity.QCategory;
 import FITDAY.community.entity.QCommunity;
 import FITDAY.community.service.CommunityService;
+import FITDAY.redis.community.CountCacheService;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.List;
 public class CommunityServiceImpl implements CommunityService {
 
     private final JPAQueryFactory jpaQueryFactory;
+    private final CountCacheService cached;
     private final QCommunity qCommunity = QCommunity.community;
     private final QCategory qCategory = QCategory.category;
 
@@ -74,10 +76,7 @@ public class CommunityServiceImpl implements CommunityService {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        long total = jpaQueryFactory
-                .select(qCommunity.id.count())
-                .from(qCommunity)
-                .fetchOne();
+        long total = cached.getCount();
 
         return ResponseEntity.ok(new PageImpl<>(content, pageable, total));
     }
