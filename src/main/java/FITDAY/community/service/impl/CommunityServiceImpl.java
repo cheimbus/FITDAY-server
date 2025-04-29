@@ -63,7 +63,9 @@ public class CommunityServiceImpl implements CommunityService {
         List<CommunityResponseDto> content = jpaQueryFactory
                 .select(Projections.constructor(
                         CommunityResponseDto.class,
-                        qCommunity.title
+                        qCommunity.id,
+                        qCommunity.title,
+                        qCommunity.category.id
                 ))
                 .from(qCommunity)
                 .join(qCommunity.category, qCategory)
@@ -73,7 +75,7 @@ public class CommunityServiceImpl implements CommunityService {
                 .fetch();
 
         long total = jpaQueryFactory
-                .select(qCommunity.count())
+                .select(qCommunity.id.count())
                 .from(qCommunity)
                 .fetchOne();
 

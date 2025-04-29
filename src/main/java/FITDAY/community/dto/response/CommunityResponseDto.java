@@ -12,4 +12,6 @@ import lombok.Setter;
 public class CommunityResponseDto {
 
     private String title;
+    private Long id;
+    private Long categoryId;
 }
