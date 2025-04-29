@@ -14,7 +14,13 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "community")
+@Table(name = "community",
+    indexes = {
+        @Index(
+                name = "idx_cover_comm",
+                columnList = "community_id, title, category_id"
+        )
+    })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Community {
 
