@@ -1,7 +1,6 @@
 package FITDAY.redis.community;
 
 import FITDAY.community.repository.CommunityRepository;
-import FITDAY.config.RedisConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -21,7 +20,7 @@ public class CountCacheService {
     @EventListener(ApplicationReadyEvent.class)
     public void warmup() {
         Long count = communityRepository.count();
-        redisTemplate.opsForValue().set(KEY, count, 1, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set(KEY, count);
     }
 
     public long getCount() {
@@ -30,7 +29,7 @@ public class CountCacheService {
             return cached;
         }
         long cnt = communityRepository.count();
-        redisTemplate.opsForValue().set(KEY, cnt, 1, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set(KEY, cnt);
         return cnt;
     }
 

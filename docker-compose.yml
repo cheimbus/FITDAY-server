@@ -16,16 +16,25 @@ services:
       - fitday-network
 
   github-actions:
-    container_name: github-actions
     image: ${API_SERVER_IMAGE}
+    container_name: github-actions
     ports:
       - "8082:8080"
-    depends_on:
-      - redis
     networks:
       - fitday-network
+    volumes:
+      - /home/ubuntu/pinpoint:/home/ubuntu/pinpoint:ro
+    entrypoint:
+      - java
+    command:
+      - -javaagent:/home/ubuntu/pinpoint/pinpoint-bootstrap.jar
+      - -Dpinpoint.config=/home/ubuntu/pinpoint/pinpoint-root.config
+      - -Dpinpoint.agentId=fitday
+      - -Dpinpoint.applicationName=fitday-app
+      - -Dspring.profiles.active=dev
+      - -jar
+      - /app.jar
 
-# 외부 network 사용할때 external true / docker-compose 안에서 네트워크 형성하면 bridge 사용
 networks:
   fitday-network:
     external: true
