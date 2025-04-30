@@ -51,4 +51,9 @@ public class CommunityController {
     public ResponseEntity<Page<CommListDto>> getCommunityList(Pageable pageable) {
         return communityService.getCommunityList(pageable);
     }
+
+    @GetMapping("{id}")
+    public ResponseEntity<CommUpdateDto> getCommunity(@PathVariable Long id) {
+        return communityService.getCommunity(id);
+    }
 }

@@ -51,7 +51,6 @@ public class CommFeedCacheService {
                         qCommunity.title,
                         qCommunity.category.id.as("categoryId"),
                         qCommunity.readCnt,
-                        qCommunity.likeCnt,
                         qCommunity.createdAt
                 ))
                 .from(qCommunity)
@@ -71,7 +70,6 @@ public class CommFeedCacheService {
                         qCommunity.title,
                         qCommunity.category.id.as("categoryId"),
                         qCommunity.readCnt,
-                        qCommunity.likeCnt,
                         qCommunity.createdAt
                 ))
                 .from(qCommunity)

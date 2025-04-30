@@ -22,4 +22,6 @@ public interface CommunityService {
     ResponseEntity<List<CommListDto>> getRecentTopN();
 
     ResponseEntity<Page<CommListDto>> getCommunityList(Pageable pageable);
+
+    ResponseEntity<CommUpdateDto> getCommunity(Long id);
 }

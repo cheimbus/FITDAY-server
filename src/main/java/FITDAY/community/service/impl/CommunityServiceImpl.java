@@ -12,6 +12,7 @@ import FITDAY.community.exception.CommunityNotFoundException;
 import FITDAY.community.repository.CategoryRepository;
 import FITDAY.community.repository.CommunityRepository;
 import FITDAY.community.service.CommunityService;
+import FITDAY.redis.community.CommCheckCacheService;
 import FITDAY.redis.community.CommCntCacheService;
 import FITDAY.redis.community.CommFeedCacheService;
 import com.querydsl.core.types.Projections;
@@ -37,6 +38,7 @@ public class CommunityServiceImpl implements CommunityService {
 
     private final CommCntCacheService cntCached;
     private final CommFeedCacheService feedCached;
+    private final CommCheckCacheService checkCache;
 
     private final CategoryRepository categoryRepository;
     private final CommunityRepository communityRepository;
@@ -66,6 +68,7 @@ public class CommunityServiceImpl implements CommunityService {
                 save.getTitle(),
                 save.getContent(),
                 save.getCategory().getId(),
+                save.getReadCnt(),
                 save.getCreatedAt(),
                 save.getUpdatedAt()
         );
@@ -95,6 +98,7 @@ public class CommunityServiceImpl implements CommunityService {
                 updated.getTitle(),
                 updated.getContent(),
                 updated.getCategory().getId(),
+                updated.getReadCnt(),
                 updated.getCreatedAt(),
                 updated.getUpdatedAt()
         );
@@ -141,7 +145,6 @@ public class CommunityServiceImpl implements CommunityService {
                         qCommunity.title,
                         qCommunity.category.id.as("categoryId"),
                         qCommunity.readCnt,
-                        qCommunity.likeCnt,
                         qCommunity.createdAt
                 ))
                 .from(qCommunity)
@@ -154,5 +157,29 @@ public class CommunityServiceImpl implements CommunityService {
         long total = cntCached.getCount();
 
         return ResponseEntity.ok(new PageImpl<>(content, pageable, total));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<CommUpdateDto> getCommunity(Long id) {
+
+        checkCache.incrementReadCnt(id);
+
+        Community community = communityRepository.findById(id)
+                .orElseThrow(() -> new CommunityNotFoundException(id));
+
+        long readCnt = checkCache.getReadCnt(id);
+
+        CommUpdateDto body = CommUpdateDto.builder()
+                .id(community.getId())
+                .title(community.getTitle())
+                .content(community.getContent())
+                .categoryId(community.getCategory().getId())
+                .readCnt(readCnt)
+                .createdAt(community.getCreatedAt())
+                .updatedAt(community.getUpdatedAt())
+                .build();
+
+        return ResponseEntity.ok(body);
     }
 }
