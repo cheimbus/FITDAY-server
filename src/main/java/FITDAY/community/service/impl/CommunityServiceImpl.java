@@ -1,11 +1,19 @@
 package FITDAY.community.service.impl;
 
 import FITDAY.community.dto.request.CommunityRequestDto;
-import FITDAY.community.dto.response.CommunityResponseDto;
+import FITDAY.community.dto.response.CommUpdateDto;
+import FITDAY.community.dto.response.CommListDto;
+import FITDAY.community.entity.Category;
+import FITDAY.community.entity.Community;
 import FITDAY.community.entity.QCategory;
 import FITDAY.community.entity.QCommunity;
+import FITDAY.community.exception.CategoryNotFoundException;
+import FITDAY.community.exception.CommunityNotFoundException;
+import FITDAY.community.repository.CategoryRepository;
+import FITDAY.community.repository.CommunityRepository;
 import FITDAY.community.service.CommunityService;
-import FITDAY.redis.community.CountCacheService;
+import FITDAY.redis.community.CommCntCacheService;
+import FITDAY.redis.community.CommFeedCacheService;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,50 +34,115 @@ import java.util.List;
 public class CommunityServiceImpl implements CommunityService {
 
     private final JPAQueryFactory jpaQueryFactory;
-    private final CountCacheService cached;
-    private final QCommunity qCommunity = QCommunity.community;
-    private final QCategory qCategory = QCategory.category;
+
+    private final CommCntCacheService cntCached;
+    private final CommFeedCacheService feedCached;
+
+    private final CategoryRepository categoryRepository;
+    private final CommunityRepository communityRepository;
+
+    private static final QCommunity qCommunity = QCommunity.community;
+    private static final QCategory qCategory = QCategory.category;
 
     @Override
-    public ResponseEntity<CommunityResponseDto> createCommunity(CommunityRequestDto requestDto) {
+    @Transactional
+    public ResponseEntity<CommUpdateDto> createCommunity(CommunityRequestDto requestDto) {
 
-        return null;
+        Category category = categoryRepository.findById(requestDto.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException(requestDto.getCategoryId()));
+
+        Community community = Community.builder()
+                .title(requestDto.getTitle())
+                .content(requestDto.getContent())
+                .category(category)
+                .build();
+
+        Community save = communityRepository.save(community);
+
+        cntCached.increment();
+
+        CommUpdateDto body = new CommUpdateDto(
+                save.getId(),
+                save.getTitle(),
+                save.getContent(),
+                save.getCategory().getId(),
+                save.getCreatedAt(),
+                save.getUpdatedAt()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 
     @Override
-    public ResponseEntity<CommunityResponseDto> updateCommunity(Long id, CommunityRequestDto requestDto) {
+    @Transactional
+    public ResponseEntity<CommUpdateDto> updateCommunity(Long id, CommunityRequestDto requestDto) {
 
-        return null;
+        Community community = communityRepository.findById(id)
+                .orElseThrow(() -> new CommunityNotFoundException(id));
+
+        community.setTitle(requestDto.getTitle());
+        community.setContent(requestDto.getContent());
+
+        if (!community.getCategory().getId().equals(requestDto.getCategoryId())) {
+            Category newCat = categoryRepository.findById(requestDto.getCategoryId())
+                    .orElseThrow(() -> new CategoryNotFoundException(requestDto.getCategoryId()));
+            community.setCategory(newCat);
+        }
+
+        Community updated = communityRepository.save(community);
+
+        CommUpdateDto body = new CommUpdateDto(
+                updated.getId(),
+                updated.getTitle(),
+                updated.getContent(),
+                updated.getCategory().getId(),
+                updated.getCreatedAt(),
+                updated.getUpdatedAt()
+        );
+        return ResponseEntity.ok(body);
     }
 
-
     @Override
+    @Transactional
     public void deleteCommunity(Long id) {
-
-
+        if (!communityRepository.existsById(id)) {
+            throw new CommunityNotFoundException(id);
+        }
+        communityRepository.deleteById(id);
+        feedCached.deleteComm(id);
+        cntCached.decrement();
     }
 
     @Override
-    public ResponseEntity<List<CommunityResponseDto>> getHotTopN() {
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<CommListDto>> getHotTopN() {
 
-        return null;
+        List<CommListDto> hotList = feedCached.getHot10();
+
+        return ResponseEntity.ok(hotList);
     }
 
     @Override
-    public ResponseEntity<List<CommunityResponseDto>> getRecentTopN() {
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<CommListDto>> getRecentTopN() {
 
-        return null;
+        List<CommListDto> recentList = feedCached.getRecent10();
+
+        return ResponseEntity.ok(recentList);
     }
 
     @Override
-    public ResponseEntity<Page<CommunityResponseDto>> getCommunityList(Pageable pageable) {
+    @Transactional(readOnly = true)
+    public ResponseEntity<Page<CommListDto>> getCommunityList(Pageable pageable) {
 
-        List<CommunityResponseDto> content = jpaQueryFactory
+        List<CommListDto> content = jpaQueryFactory
                 .select(Projections.constructor(
-                        CommunityResponseDto.class,
+                        CommListDto.class,
                         qCommunity.id,
                         qCommunity.title,
-                        qCommunity.category.id.as("categoryId")
+                        qCommunity.category.id.as("categoryId"),
+                        qCommunity.readCnt,
+                        qCommunity.likeCnt,
+                        qCommunity.createdAt
                 ))
                 .from(qCommunity)
                 .join(qCommunity.category, qCategory)
@@ -76,7 +151,7 @@ public class CommunityServiceImpl implements CommunityService {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        long total = cached.getCount();
+        long total = cntCached.getCount();
 
         return ResponseEntity.ok(new PageImpl<>(content, pageable, total));
     }

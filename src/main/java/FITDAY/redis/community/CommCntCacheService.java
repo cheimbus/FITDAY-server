@@ -7,11 +7,9 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.TimeUnit;
-
 @Service
 @RequiredArgsConstructor
-public class CountCacheService {
+public class CommCntCacheService {
 
     private static final String KEY = "community-count";
     private final RedisTemplate<String, Long> redisTemplate;

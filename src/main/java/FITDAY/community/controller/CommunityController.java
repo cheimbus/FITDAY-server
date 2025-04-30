@@ -1,7 +1,8 @@
 package FITDAY.community.controller;
 
 import FITDAY.community.dto.request.CommunityRequestDto;
-import FITDAY.community.dto.response.CommunityResponseDto;
+import FITDAY.community.dto.response.CommUpdateDto;
+import FITDAY.community.dto.response.CommListDto;
 import FITDAY.community.service.CommunityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,12 +20,12 @@ public class CommunityController {
     private final CommunityService communityService;
 
     @PostMapping("/create")
-    public ResponseEntity<CommunityResponseDto> createCommunity(@RequestBody CommunityRequestDto requestDto) {
+    public ResponseEntity<CommUpdateDto> createCommunity(@RequestBody CommunityRequestDto requestDto) {
         return communityService.createCommunity(requestDto);
     }
 
     @PutMapping("/mod/{id}")
-    public ResponseEntity<CommunityResponseDto> updateCommunity(
+    public ResponseEntity<CommUpdateDto> updateCommunity(
             @PathVariable Long id,
             @RequestBody CommunityRequestDto requestDto) {
         return communityService.updateCommunity(id, requestDto);
@@ -37,17 +38,17 @@ public class CommunityController {
     }
 
     @GetMapping("/hot")
-    public ResponseEntity<List<CommunityResponseDto>> getHotCommunity() {
+    public ResponseEntity<List<CommListDto>> getHotCommunity() {
         return communityService.getHotTopN();
     }
 
     @GetMapping("/recent")
-    public ResponseEntity<List<CommunityResponseDto>> getRecentCommunity() {
+    public ResponseEntity<List<CommListDto>> getRecentCommunity() {
         return communityService.getRecentTopN();
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Page<CommunityResponseDto>> getCommunityList(Pageable pageable) {
+    public ResponseEntity<Page<CommListDto>> getCommunityList(Pageable pageable) {
         return communityService.getCommunityList(pageable);
     }
 }
