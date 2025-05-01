@@ -33,11 +33,13 @@ public class CommFeedCacheService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void warmup() {
+
         refreshCache();
     }
 
     @Scheduled(cron = "0 0/10 * * * *")
     public void refreshCache() {
+
         cacheHot10();
         cacheRecent10();
     }
@@ -63,6 +65,7 @@ public class CommFeedCacheService {
     }
 
     private void cacheRecent10() {
+
         List<CommListDto> recent10 = queryFactory
                 .select(Projections.constructor(
                         CommListDto.class,
@@ -81,11 +84,13 @@ public class CommFeedCacheService {
     }
 
     public void deleteComm(Long communityId) {
+
         removeFromList(HOT_KEY, communityId);
         removeFromList(RECENT_KEY, communityId);
     }
 
     private void removeFromList(String key, Long id) {
+
         List<CommListDto> list = redisTemplate.opsForValue().get(key);
         if (list == null || list.isEmpty()) return;
 
@@ -97,10 +102,12 @@ public class CommFeedCacheService {
     }
 
     public List<CommListDto> getHot10() {
+
         return redisTemplate.opsForValue().get(HOT_KEY);
     }
 
     public List<CommListDto> getRecent10() {
+
         return redisTemplate.opsForValue().get(RECENT_KEY);
     }
 }

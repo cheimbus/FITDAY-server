@@ -23,6 +23,7 @@ public class CommCheckCacheService {
     private final CommunityRepository communityRepository;
 
     public void incrementReadCnt(Long communityId) {
+
         redisTemplate.opsForHash().increment(READ_HASH, communityId.toString(), 1L);
     }
 
@@ -37,6 +38,7 @@ public class CommCheckCacheService {
     @Scheduled(cron = "0 0/5 * * * *")
     @Transactional
     public void flush() {
+
         Map<Object, Object> readDelta = redisTemplate.opsForHash().entries(READ_HASH);
 
         flushReadCnt(readDelta);
@@ -45,6 +47,9 @@ public class CommCheckCacheService {
     }
 
     private void flushReadCnt(Map<Object, Object> delta) {
+
+        if (delta == null) return;
+
         delta.forEach((k, v) -> {
             String key = k.toString();
             String val = v.toString();

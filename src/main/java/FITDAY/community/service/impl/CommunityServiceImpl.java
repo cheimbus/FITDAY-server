@@ -108,6 +108,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     @Transactional
     public void deleteCommunity(Long id) {
+
         if (!communityRepository.existsById(id)) {
             throw new CommunityNotFoundException(id);
         }
