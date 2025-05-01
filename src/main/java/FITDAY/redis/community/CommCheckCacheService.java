@@ -34,7 +34,7 @@ public class CommCheckCacheService {
         return dbCnt + (delta != null ? delta : 0L);
     }
 
-    @Scheduled(cron = "0 */30 * * * *")
+    @Scheduled(cron = "0 0/5 * * * *")
     @Transactional
     public void flush() {
         Map<Object, Object> readDelta = redisTemplate.opsForHash().entries(READ_HASH);
@@ -46,8 +46,10 @@ public class CommCheckCacheService {
 
     private void flushReadCnt(Map<Object, Object> delta) {
         delta.forEach((k, v) -> {
-            Long id = Long.valueOf((String) k);
-            Long dt = (Long) v;
+            String key = k.toString();
+            String val = v.toString();
+            long id = Long.parseLong(key);
+            long dt = Long.parseLong(val);
             if (dt > 0) {
                 communityRepository.incrementReadCount(id, dt);
             }

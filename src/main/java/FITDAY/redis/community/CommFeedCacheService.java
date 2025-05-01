@@ -3,7 +3,6 @@ package FITDAY.redis.community;
 import FITDAY.community.dto.response.CommListDto;
 import FITDAY.community.entity.QCategory;
 import FITDAY.community.entity.QCommunity;
-import FITDAY.community.repository.CommunityRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -26,24 +25,25 @@ public class CommFeedCacheService {
 
     private static final String HOT_KEY    = "community:hot10";
     private static final String RECENT_KEY = "community:recent10";
+    private static final int LIMIT = 10;
     private static final QCommunity qCommunity = QCommunity.community;
     private static final QCategory qCategory = QCategory.category;
 
     private final RedisTemplate<String, List<CommListDto>> redisTemplate;
-    private final CommunityRepository communityRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void warmup() {
         refreshCache();
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 0/10 * * * *")
     public void refreshCache() {
         cacheHot10();
         cacheRecent10();
     }
 
     private void cacheHot10() {
+
         List<CommListDto> hot10 = queryFactory
                 .select(Projections.constructor(
                         CommListDto.class,
@@ -56,7 +56,7 @@ public class CommFeedCacheService {
                 .from(qCommunity)
                 .join(qCommunity.category, qCategory)
                 .orderBy(qCommunity.readCnt.desc())
-                .limit(10)
+                .limit(LIMIT)
                 .fetch();
 
         redisTemplate.opsForValue().set(HOT_KEY, hot10);
@@ -75,7 +75,7 @@ public class CommFeedCacheService {
                 .from(qCommunity)
                 .join(qCommunity.category, qCategory)
                 .orderBy(qCommunity.createdAt.desc())
-                .limit(10)
+                .limit(LIMIT)
                 .fetch();
         redisTemplate.opsForValue().set(RECENT_KEY, recent10);
     }
