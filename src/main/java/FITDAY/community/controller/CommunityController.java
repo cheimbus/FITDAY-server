@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,8 +33,12 @@ public class CommunityController {
     }
 
     @DeleteMapping("/del/{id}")
-    public ResponseEntity<Void> deleteCommunity(@PathVariable Long id) {
-        communityService.deleteCommunity(id);
+    public ResponseEntity<Void> deleteCommunity(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+        communityService.deleteCommunity(id, email);
         return ResponseEntity.noContent().build();
     }
 

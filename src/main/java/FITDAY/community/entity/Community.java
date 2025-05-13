@@ -51,10 +51,10 @@ public class Community {
     private Long commentCnt;
 
     @Column(name = "reg_id")
-    private Long regId;
+    private String regId;
 
     @Column(name = "mod_id")
-    private Long modId;
+    private String modId;
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)

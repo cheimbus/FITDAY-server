@@ -1,4 +1,4 @@
-package FITDAY.auth.dto;
+package FITDAY.auth.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,4 +13,8 @@ public class AuthResponse {
 
     private String accessToken;
     private String refreshToken;
+
+    public AuthResponse(String accessToken) {
+        this.accessToken = accessToken;
+    }
 }

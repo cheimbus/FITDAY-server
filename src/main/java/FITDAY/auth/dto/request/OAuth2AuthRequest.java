@@ -1,4 +1,4 @@
-package FITDAY.auth.dto;
+package FITDAY.auth.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,5 +12,5 @@ import lombok.Setter;
 public class OAuth2AuthRequest implements AuthRequest {
 
     private String provider;
-    private String accessToken;
+    private String code;
 }

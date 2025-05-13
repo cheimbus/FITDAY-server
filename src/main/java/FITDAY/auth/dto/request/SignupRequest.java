@@ -1,4 +1,4 @@
-package FITDAY.auth.dto;
+package FITDAY.auth.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

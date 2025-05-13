@@ -1,4 +1,4 @@
-package FITDAY.auth.dto;
+package FITDAY.auth.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequest implements AuthRequest{
+public class UserRequest implements AuthRequest {
 
     private String email;
     private String password;

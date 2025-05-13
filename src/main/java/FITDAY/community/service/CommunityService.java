@@ -15,7 +15,7 @@ public interface CommunityService {
 
     ResponseEntity<CommUpdateDto> updateCommunity(Long id, CommunityRequestDto requestDto);
 
-    void deleteCommunity(Long id);
+    void deleteCommunity(Long id, String email);
 
     ResponseEntity<List<CommListDto>> getHotTopN();
 

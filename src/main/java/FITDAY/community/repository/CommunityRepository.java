@@ -20,4 +20,7 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
     @Modifying
     @Query("UPDATE Community c SET c.readCnt = c.readCnt + :delta WHERE c.id = :id")
     int incrementReadCount(@Param("id") Long id, @Param("delta") long delta);
+
+    @Query("SELECT c.regId FROM Community c WHERE c.id =:id")
+    String findEmailById(Long id);
 }

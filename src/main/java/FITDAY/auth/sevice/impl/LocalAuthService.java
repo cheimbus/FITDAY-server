@@ -1,9 +1,10 @@
-package FITDAY.auth.sevice;
+package FITDAY.auth.sevice.impl;
 
-import FITDAY.auth.dto.AuthRequest;
-import FITDAY.auth.dto.AuthResponse;
-import FITDAY.auth.dto.UserRequest;
+import FITDAY.auth.dto.request.AuthRequest;
+import FITDAY.auth.dto.response.AuthResponse;
+import FITDAY.auth.dto.request.UserRequest;
 import FITDAY.auth.jwt.JwtProvider;
+import FITDAY.auth.sevice.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

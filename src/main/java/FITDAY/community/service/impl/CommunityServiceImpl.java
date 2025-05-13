@@ -1,5 +1,6 @@
 package FITDAY.community.service.impl;
 
+import FITDAY.auth.sevice.impl.CustomUserDetailsService;
 import FITDAY.community.dto.request.CommunityRequestDto;
 import FITDAY.community.dto.response.CommUpdateDto;
 import FITDAY.community.dto.response.CommListDto;
@@ -8,6 +9,7 @@ import FITDAY.community.entity.Community;
 import FITDAY.community.entity.QCategory;
 import FITDAY.community.entity.QCommunity;
 import FITDAY.community.exception.CategoryNotFoundException;
+import FITDAY.community.exception.CommunityAuthException;
 import FITDAY.community.exception.CommunityNotFoundException;
 import FITDAY.community.repository.CategoryRepository;
 import FITDAY.community.repository.CommunityRepository;
@@ -15,6 +17,8 @@ import FITDAY.community.service.CommunityService;
 import FITDAY.redis.community.CommCheckCacheService;
 import FITDAY.redis.community.CommCntCacheService;
 import FITDAY.redis.community.CommFeedCacheService;
+import FITDAY.user.AuthRole;
+import FITDAY.user.entity.User;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +44,7 @@ public class CommunityServiceImpl implements CommunityService {
     private final CommCntCacheService cntCached;
     private final CommFeedCacheService feedCached;
     private final CommCheckCacheService checkCache;
+    private final CustomUserDetailsService customUserDetailsService;
 
     private final CategoryRepository categoryRepository;
     private final CommunityRepository communityRepository;
@@ -107,11 +113,22 @@ public class CommunityServiceImpl implements CommunityService {
 
     @Override
     @Transactional
-    public void deleteCommunity(Long id) {
+    public void deleteCommunity(Long id, String userEmail) {
 
         if (!communityRepository.existsById(id)) {
             throw new CommunityNotFoundException(id);
         }
+
+        String authorEmail = communityRepository.findEmailById(id);
+
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(authorEmail);
+        boolean isAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(ga -> ga.getAuthority().equals(String.valueOf(AuthRole.A1)));
+
+        if (!authorEmail.equals(userEmail) && !isAdmin) {
+            throw new CommunityAuthException();
+        }
+
         communityRepository.deleteById(id);
         feedCached.deleteComm(id);
         cntCached.decrement();

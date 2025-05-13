@@ -1,7 +1,6 @@
 package FITDAY.user.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "user")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor()
 public class User {
 
     @Id
@@ -32,9 +31,8 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "login_type")
-    private LoginType loginType;
+    private String loginType;
 
     @Column(name = "provider_id")
     private String providerId;
