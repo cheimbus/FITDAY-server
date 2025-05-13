@@ -125,13 +125,12 @@ public class CommunityServiceImpl implements CommunityService {
         boolean isAdmin = userDetails.getAuthorities().stream()
                 .anyMatch(ga -> ga.getAuthority().equals(String.valueOf(AuthRole.A1)));
 
-        if (!authorEmail.equals(userEmail) && !isAdmin) {
-            throw new CommunityAuthException();
+        if (authorEmail.equals(userEmail) || isAdmin) {
+            communityRepository.deleteById(id);
+            feedCached.deleteComm(id);
+            cntCached.decrement();
         }
-
-        communityRepository.deleteById(id);
-        feedCached.deleteComm(id);
-        cntCached.decrement();
+        else throw new CommunityAuthException();
     }
 
     @Override

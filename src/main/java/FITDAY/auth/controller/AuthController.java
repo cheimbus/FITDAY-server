@@ -28,11 +28,10 @@ public class AuthController {
     }
 
     @GetMapping("/login/{provider}")
-    public RedirectView oauth2Login(@PathVariable String provider) {
+    public String oauth2Login(@PathVariable String provider) {
 
         OAuth2AuthService service = (OAuth2AuthService) authServiceFactory.getService(provider);
-        String g = service.getAuthorizationUri();
-        return new RedirectView(service.getAuthorizationUri());
+        return "redirect:" + service.getAuthorizationUri();
     }
 
     @GetMapping("/callback/{provider}")
