@@ -8,7 +8,7 @@ import FITDAY.auth.dto.request.OAuth2AuthRequest;
 import FITDAY.auth.jwt.JwtProvider;
 import FITDAY.auth.sevice.AuthService;
 import FITDAY.auth.sevice.OAuth2AuthService;
-import FITDAY.user.AuthRole;
+import FITDAY.global.AuthRole;
 import FITDAY.user.dto.UserRequestDto;
 import FITDAY.user.service.UserService;
 import lombok.RequiredArgsConstructor;

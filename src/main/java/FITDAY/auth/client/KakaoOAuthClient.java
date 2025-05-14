@@ -33,15 +33,6 @@ public class KakaoOAuthClient {
     @Value("${oauth.kakao.user-info}")
     private String userUrl;
 
-    @Value("${oauth.kakao.client-id}")
-    private String clientId;
-
-    @Value("${oauth.kakao.client-secret}")
-    private String clientSecret;
-
-    @Value("${oauth.kakao.profile-url}")
-    private String profileUrl;
-
     private final RestTemplate restTemplate;
 
     public String getRedirectUri() {

@@ -1,6 +1,6 @@
 package FITDAY.user.service.impl;
 
-import FITDAY.user.AuthRole;
+import FITDAY.global.AuthRole;
 import FITDAY.user.dto.UserRequestDto;
 import FITDAY.user.entity.User;
 import FITDAY.user.repository.UserRepository;
