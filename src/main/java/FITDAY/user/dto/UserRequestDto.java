@@ -15,10 +15,9 @@ public class UserRequestDto {
     private String password;
     private String accessToken;
 
-    public UserRequestDto(String loginType, String email, String name, String accessToken) {
+    public UserRequestDto(String loginType, String email, String name) {
         this.loginType = loginType;
         this.email = email;
         this.name = name;
-        this.accessToken = accessToken;
     }
 }

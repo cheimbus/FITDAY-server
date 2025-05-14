@@ -50,13 +50,13 @@ public class KakaoAuthService implements AuthService, OAuth2AuthService {
         roles.add(AuthRole.USER.toString());
         String accessToken = jwtProvider.createToken(userInfo.getEmail(), roles);
 
-        userService.saveUser(new UserRequestDto(req.getProvider(), userInfo.getEmail(), userInfo.getName(), accessToken));
+        userService.saveUser(new UserRequestDto(req.getProvider(), userInfo.getEmail(), userInfo.getName()));
 
-//        String redisKey = "token:" + userInfo.getEmail();
+        String redisKey = "token:" + userInfo.getEmail();
 
-//        long expirationMillis = jwtProvider.getExpiryDuration();
-//        redisTemplate.opsForValue()
-//                .set(redisKey, accessToken, Duration.ofMillis(expirationMillis));
+        long expirationMillis = jwtProvider.getExpiryDuration();
+        redisTemplate.opsForValue()
+                .set(redisKey, accessToken, Duration.ofMillis(expirationMillis));
 
         return new AuthResponse(accessToken);
     }
