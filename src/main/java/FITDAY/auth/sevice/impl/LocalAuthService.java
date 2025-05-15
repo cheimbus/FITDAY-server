@@ -31,6 +31,6 @@ public class LocalAuthService implements AuthService {
         String token = jwtProvider.createToken(user.getUsername(), user.getAuthorities().stream()
                 .map(granted -> granted.getAuthority()).toList());
 
-        return new AuthResponse(token, null);
+        return new AuthResponse(token);
     }
 }

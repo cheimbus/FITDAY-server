@@ -21,7 +21,7 @@ import java.util.List;
 
 @Service("kakao")
 @RequiredArgsConstructor
-public class KakaoAuthService implements AuthService, OAuth2AuthService {
+public class KakaoAuthService implements OAuth2AuthService {
 
     private final KakaoOAuthClient kakaoClient;
     private final JwtProvider jwtProvider;
