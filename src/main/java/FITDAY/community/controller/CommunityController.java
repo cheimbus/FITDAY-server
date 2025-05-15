@@ -1,6 +1,7 @@
 package FITDAY.community.controller;
 
 import FITDAY.community.dto.request.CommunityRequestDto;
+import FITDAY.community.dto.response.CommPagingDto;
 import FITDAY.community.dto.response.CommUpdateDto;
 import FITDAY.community.dto.response.CommListDto;
 import FITDAY.community.service.CommunityService;
@@ -53,7 +54,7 @@ public class CommunityController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Page<CommListDto>> getCommunityList(Pageable pageable) {
+    public ResponseEntity<Page<CommPagingDto>> getCommunityList(Pageable pageable) {
         return communityService.getCommunityList(pageable);
     }
 

@@ -2,18 +2,14 @@ package FITDAY.community.dto.response;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CommListDto {
+public class CommPagingDto {
 
     private Long id;
     private String title;
     private Long categoryId;
-    private Long readCnt;
-    private LocalDateTime createAt;
 }

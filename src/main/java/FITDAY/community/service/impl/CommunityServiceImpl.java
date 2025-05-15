@@ -2,6 +2,7 @@ package FITDAY.community.service.impl;
 
 import FITDAY.auth.sevice.impl.CustomUserDetailsService;
 import FITDAY.community.dto.request.CommunityRequestDto;
+import FITDAY.community.dto.response.CommPagingDto;
 import FITDAY.community.dto.response.CommUpdateDto;
 import FITDAY.community.dto.response.CommListDto;
 import FITDAY.community.entity.Category;
@@ -152,11 +153,11 @@ public class CommunityServiceImpl implements CommunityService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<Page<CommListDto>> getCommunityList(Pageable pageable) {
+    public ResponseEntity<Page<CommPagingDto>> getCommunityList(Pageable pageable) {
 
-        List<CommListDto> content = jpaQueryFactory
+        List<CommPagingDto> content = jpaQueryFactory
                 .select(Projections.constructor(
-                        CommListDto.class,
+                        CommPagingDto.class,
                         qCommunity.id,
                         qCommunity.title,
                         qCommunity.category.id.as("categoryId")

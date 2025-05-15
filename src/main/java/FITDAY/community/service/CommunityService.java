@@ -1,6 +1,7 @@
 package FITDAY.community.service;
 
 import FITDAY.community.dto.request.CommunityRequestDto;
+import FITDAY.community.dto.response.CommPagingDto;
 import FITDAY.community.dto.response.CommUpdateDto;
 import FITDAY.community.dto.response.CommListDto;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,7 @@ public interface CommunityService {
 
     ResponseEntity<List<CommListDto>> getRecentTopN();
 
-    ResponseEntity<Page<CommListDto>> getCommunityList(Pageable pageable);
+    ResponseEntity<Page<CommPagingDto>> getCommunityList(Pageable pageable);
 
     ResponseEntity<CommUpdateDto> getCommunity(Long id);
 }
