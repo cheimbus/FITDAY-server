@@ -159,9 +159,7 @@ public class CommunityServiceImpl implements CommunityService {
                         CommListDto.class,
                         qCommunity.id,
                         qCommunity.title,
-                        qCommunity.category.id.as("categoryId"),
-                        qCommunity.readCnt,
-                        qCommunity.createdAt
+                        qCommunity.category.id.as("categoryId")
                 ))
                 .from(qCommunity)
                 .join(qCommunity.category, qCategory)

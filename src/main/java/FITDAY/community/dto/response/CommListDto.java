@@ -14,6 +14,4 @@ public class CommListDto {
     private Long id;
     private String title;
     private Long categoryId;
-    private Long readCnt;
-    private LocalDateTime createAt;
 }
