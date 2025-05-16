@@ -4,11 +4,13 @@ import FITDAY.auth.dto.response.AuthResponse;
 import FITDAY.auth.dto.request.OAuth2AuthRequest;
 import FITDAY.auth.dto.request.UserRequest;
 import FITDAY.auth.factoryMethod.AuthServiceFactory;
+import FITDAY.auth.jwt.JwtProvider;
 import FITDAY.auth.sevice.AuthService;
 import FITDAY.auth.sevice.OAuth2AuthService;
 import FITDAY.user.dto.UserRequestDto;
 import FITDAY.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,7 @@ public class AuthController {
 
     private final AuthServiceFactory authServiceFactory;
     private final UserService userService;
+    private final JwtProvider jwtProvider;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody UserRequest request) {
@@ -47,6 +50,16 @@ public class AuthController {
 
     @GetMapping("/nameValidate")
     public boolean nameValidate(@RequestBody UserRequestDto request) {
+
         return userService.nameValidate(request);
+    }
+
+    @PostMapping("/logout/{provider}")
+    public void logout(
+            @PathVariable String provider,
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader
+    ) {
+
+        jwtProvider.logout(provider, authHeader);
     }
 }

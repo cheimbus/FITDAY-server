@@ -6,16 +6,15 @@ import FITDAY.auth.dto.request.AuthRequest;
 import FITDAY.auth.dto.response.AuthResponse;
 import FITDAY.auth.dto.request.OAuth2AuthRequest;
 import FITDAY.auth.jwt.JwtProvider;
-import FITDAY.auth.sevice.AuthService;
 import FITDAY.auth.sevice.OAuth2AuthService;
 import FITDAY.global.AuthRole;
+import FITDAY.global.OAuthProvider;
+import FITDAY.redis.auth.RefreshCacheService;
 import FITDAY.user.dto.UserRequestDto;
 import FITDAY.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,8 @@ public class KakaoAuthService implements OAuth2AuthService {
     private final KakaoOAuthClient kakaoClient;
     private final JwtProvider jwtProvider;
     private final UserService userService;
-    private final RedisTemplate redisTemplate;
+    private final RefreshCacheService refreshCacheService;
+    private final String PROVIDER = String.valueOf(OAuthProvider.KAKAO);
 
     @Override
     public AuthResponse authenticate(AuthRequest req) {
@@ -48,15 +48,13 @@ public class KakaoAuthService implements OAuth2AuthService {
 
         List<String> roles = new ArrayList<>();
         roles.add(AuthRole.USER.toString());
+
         String accessToken = jwtProvider.createToken(userInfo.getEmail(), roles);
+        String refreshToken = jwtProvider.createRefreshToken(userInfo.getEmail(), roles);
+        String redisKey =  PROVIDER + userInfo.getEmail();
 
         userService.saveUser(new UserRequestDto(req.getProvider(), userInfo.getEmail(), userInfo.getName()));
-
-        String redisKey = "token:" + userInfo.getEmail();
-
-        long expirationMillis = jwtProvider.getExpiryDuration();
-        redisTemplate.opsForValue()
-                .set(redisKey, accessToken, Duration.ofMillis(expirationMillis));
+        refreshCacheService.saveRefreshToken(redisKey, refreshToken);
 
         return new AuthResponse(accessToken);
     }

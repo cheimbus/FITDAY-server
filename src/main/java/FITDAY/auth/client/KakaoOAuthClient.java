@@ -27,9 +27,6 @@ public class KakaoOAuthClient {
     @Value("${oauth.kakao.token-url}")
     private String tokenUrl;
 
-    @Value("${oauth.kakao.logout-url}")
-    private String logoutUrl;
-
     @Value("${oauth.kakao.user-info}")
     private String userUrl;
 
@@ -92,19 +89,5 @@ public class KakaoOAuthClient {
         String name = profile.has("nickname") ? profile.get("nickname").asText() : null;
 
         return new KakaoUserInfo(id, email, name);
-    }
-
-    public String logout() {
-
-        String fullLogoutUrl = UriComponentsBuilder
-                .fromUriString(logoutUrl)
-                .queryParam("client_id", apiKey)
-                .queryParam("redirect_uri", redirectUri)
-                .build()
-                .toUriString();
-
-        JsonNode logoutInfo = restTemplate.getForObject(fullLogoutUrl, JsonNode.class);
-
-        return logoutInfo.get("state").asText();
     }
 }

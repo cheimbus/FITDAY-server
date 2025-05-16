@@ -1,5 +1,6 @@
 package FITDAY.auth.jwt;
 
+import FITDAY.redis.auth.LogoutService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -7,6 +8,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,12 +25,16 @@ import java.util.List;
 public class JwtProvider {
 
     private final UserDetailsService userDetailsService;
+    private final LogoutService logoutService;
 
     @Value("${jwt.secret}")
     private String secret;
 
     @Value("${jwt.expired}")
     private long expired;
+
+    @Value("${jwt.refreshExpired}")
+    private long refreshExpired;
 
     private Key key;
 
@@ -44,6 +51,22 @@ public class JwtProvider {
 
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expired);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String createRefreshToken(String email, List<String> roles) {
+
+        Claims claims = Jwts.claims().setSubject(email);
+        claims.put("roles", roles);
+
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + refreshExpired);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -90,7 +113,21 @@ public class JwtProvider {
                 .getSubject();
     }
 
-    public long getExpiryDuration() {
-        return expired;
+    public long getRefreshDuration() {
+        return refreshExpired;
+    }
+
+    public ResponseEntity<Void> logout(String provider, String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String accessToken = authHeader.substring(7);
+        String email = getEmail(accessToken);
+
+        logoutService.delete(provider + email);
+
+        return null;
     }
 }

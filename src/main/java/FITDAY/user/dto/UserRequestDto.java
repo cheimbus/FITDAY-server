@@ -13,9 +13,9 @@ public class UserRequestDto {
     private String name;
     private String email;
     private String password;
-    private String accessToken;
 
     public UserRequestDto(String loginType, String email, String name) {
+
         this.loginType = loginType;
         this.email = email;
         this.name = name;
