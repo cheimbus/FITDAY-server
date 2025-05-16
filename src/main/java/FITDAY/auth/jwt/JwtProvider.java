@@ -1,5 +1,6 @@
 package FITDAY.auth.jwt;
 
+import FITDAY.common.service.RefreshTokenKeyCreate;
 import FITDAY.redis.auth.LogoutService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -26,6 +27,7 @@ public class JwtProvider {
 
     private final UserDetailsService userDetailsService;
     private final LogoutService logoutService;
+    private final RefreshTokenKeyCreate refreshTokenKeyCreate;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -126,7 +128,9 @@ public class JwtProvider {
         String accessToken = authHeader.substring(7);
         String email = getEmail(accessToken);
 
-        logoutService.delete(provider + email);
+        String redisKey = refreshTokenKeyCreate.createKey(email, provider);
+
+        logoutService.delete(redisKey);
 
         return null;
     }

@@ -7,6 +7,7 @@ import FITDAY.auth.dto.response.AuthResponse;
 import FITDAY.auth.dto.request.OAuth2AuthRequest;
 import FITDAY.auth.jwt.JwtProvider;
 import FITDAY.auth.sevice.OAuth2AuthService;
+import FITDAY.common.service.RefreshTokenKeyCreate;
 import FITDAY.global.AuthRole;
 import FITDAY.global.OAuthProvider;
 import FITDAY.redis.auth.RefreshCacheService;
@@ -27,6 +28,7 @@ public class KakaoAuthService implements OAuth2AuthService {
     private final UserService userService;
     private final RefreshCacheService refreshCacheService;
     private final String PROVIDER = String.valueOf(OAuthProvider.KAKAO);
+    private final RefreshTokenKeyCreate refreshTokenKeyCreate;
 
     @Override
     public AuthResponse authenticate(AuthRequest req) {
@@ -51,7 +53,7 @@ public class KakaoAuthService implements OAuth2AuthService {
 
         String accessToken = jwtProvider.createToken(userInfo.getEmail(), roles);
         String refreshToken = jwtProvider.createRefreshToken(userInfo.getEmail(), roles);
-        String redisKey =  PROVIDER + userInfo.getEmail();
+        String redisKey = refreshTokenKeyCreate.createKey(userInfo.getEmail(), PROVIDER);
 
         userService.saveUser(new UserRequestDto(req.getProvider(), userInfo.getEmail(), userInfo.getName()));
         refreshCacheService.saveRefreshToken(redisKey, refreshToken);
